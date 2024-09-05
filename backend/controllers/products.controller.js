@@ -18,7 +18,7 @@ export const getProductById = async(req, res) => {
         res.status(200).json({success: true, data: product})
     } catch (error) {
         console.error("Error retrieving product: ", error.message);
-        res.status(404).json({success: false, message: "Item not found!"}) 
+        res.status(500).json({success: false, message: "Server error"}) 
     }
 }
 
@@ -37,11 +37,12 @@ export const createProduct = async(req, res) => {
 }
 export const deleteProduct = async(req, res) => {
     try {
-        const product = await Product.findByIdAndDelete(req.params.id)        
+        const product = await Product.findByIdAndDelete(req.params.id)   
+        if(!product) return res.status(400).json({success: false, message: "No product found"})
         res.status(200).json({success: true, message: "Product deleted"})
     } catch (error) {
         console.error("Error deleting a product: ", error.message)
-        res.status(400).json({success: false, message: "No product found"})
+        res.status(500).json({success: false, message: "Server error"})
     }
 }
 export const updateProduct = async (req, res) => {
